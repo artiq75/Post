@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Http } from '../utils/http'
+import { useAsyncEffect } from '../hooks'
 
 export function Posts() {
   const [posts, setPosts] = useState([])
 
-  useEffect(() => {
-    Http.get('/posts').then(setPosts)
+  useAsyncEffect(async () => {
+    const posts = await Http.get('/posts')
+    setPosts(posts)
   }, [])
 
   return (

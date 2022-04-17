@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { Comment } from '../components/Comment'
+import { useAsyncEffect } from '../hooks'
 import { Http } from '../utils/http'
 
 export function Post() {
@@ -7,20 +9,14 @@ export function Post() {
   const [state, setState] = useState({
     post: {},
     user: {},
-    comments: [],
   })
 
-  useEffect(() => {
-    Http.get(`/posts/${params.postId}`).then((post) => {
-      Http.get(`/users/${post.userId}`).then((user) => {
-        Http.get(`/posts/${post.id}/comments`).then((comments) => {
-          setState({
-            post,
-            user,
-            comments,
-          })
-        })
-      })
+  useAsyncEffect(async () => {
+    const post = await Http.get(`/posts/${params.postId}`)
+    const user = await Http.get(`/users/${post.userId}`)
+    setState({
+      post,
+      user,
     })
   }, [])
 
@@ -35,20 +31,7 @@ export function Post() {
         </header>
         <div>{state.post.body}</div>
       </article>
-      <h2>Commentaires</h2>
-      <ul>
-        {state.comments.map((comment) => (
-          <li key={comment.id}>
-            <article>
-              <p>
-                <strong>{comment.email.substring(0, comment.email.indexOf('@'))}</strong>
-                <br />
-                {comment.body}
-              </p>
-            </article>
-          </li>
-        ))}
-      </ul>
+      <Comment postId={state.post.id} />
     </>
   )
 }
