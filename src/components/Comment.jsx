@@ -85,9 +85,12 @@ const CommentItem = memo(function ({ comment, onRemove, onUpdate }) {
     [setIsUpdate]
   )
 
-  const username = useMemo(function () {
-    return comment.email.substring(0, comment.email.indexOf('@'))
-  }, [comment.email])
+  const username = useMemo(
+    function () {
+      return comment.email.substring(0, comment.email.indexOf('@'))
+    },
+    [comment.email]
+  )
 
   return (
     <>
@@ -138,34 +141,26 @@ const CommentForm = memo(function ({ onSubmit, onCancel, comment }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="name">Nom</label>
-      <input
-        type="text"
+      <TextField
         name="name"
-        id="name"
+        label="Nom"
         defaultValue={comment?.name}
         required
       />
-      <br />
-      <label htmlFor="email">Email</label>
-      <input
+      <TextField
         type="email"
         name="email"
-        id="email"
+        label="Email"
         defaultValue={comment?.email}
         required
       />
-      <br />
-      <label htmlFor="body">Contenu</label>
-      <textarea
+      <TextField
+        textarea="true"
         name="body"
-        id="body"
-        cols="30"
-        rows="10"
+        label="Contenu"
         defaultValue={comment?.body}
         required
       />
-      <br />
       <button type="submit">{comment ? 'modifier' : 'Commenter'}</button>
       <button type="reset" onClick={handleCancel}>
         annuler
@@ -173,3 +168,17 @@ const CommentForm = memo(function ({ onSubmit, onCancel, comment }) {
     </form>
   )
 })
+
+function TextField(props) {
+  const { type = 'text', name, label, textarea } = props
+  return (
+    <div>
+      <label htmlFor={name}>{label}</label>
+      {textarea ? (
+        <textarea name={name} id={name} {...props} />
+      ) : (
+        <input type={type} name={name} id={name} {...props} />
+      )}
+    </div>
+  )
+}
