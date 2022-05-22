@@ -155,11 +155,11 @@ const CommentForm = memo(function ({ onSubmit, onCancel, comment }) {
         required
       />
       <TextField
-        textarea="true"
         name="body"
         label="Contenu"
         defaultValue={comment?.body}
         required
+        multiline
       />
       <button type="submit">{comment ? 'modifier' : 'Commenter'}</button>
       <button type="reset" onClick={handleCancel}>
@@ -169,15 +169,14 @@ const CommentForm = memo(function ({ onSubmit, onCancel, comment }) {
   )
 })
 
-function TextField(props) {
-  const { type = 'text', name, label, textarea } = props
+function TextField({ type = 'text', name, label, multiline, ...others }) {
   return (
     <div>
       <label htmlFor={name}>{label}</label>
-      {textarea ? (
-        <textarea name={name} id={name} {...props} />
+      {multiline ? (
+        <textarea name={name} id={name} {...others} />
       ) : (
-        <input type={type} name={name} id={name} {...props} />
+        <input type={type} name={name} id={name} {...others} />
       )}
     </div>
   )
